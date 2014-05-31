@@ -1,0 +1,34 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>311vs10-1</title>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<script src="district-shapefiles.js"></script>
+</head>
+<body>
+	<h1>Open 311 vs 10-1 District Map</h1>
+	<h2>an <a href="https://twitter.com/atxhack4change">@ATXHackforChange</a> project</h2>
+	<div id="map" class="map"></div>
+
+</body>
+<script type="text/javascript">
+	var map = L.map('map', {
+	    center: [30.25, -97.75], //Austin!
+	    zoom: 11,
+	    scrollWheelZoom: false
+	});
+
+	L.tileLayer(
+	    'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
+	).addTo(map);
+
+	L.geoJson (districts, {
+		fill: false,
+		weight: 1,
+		color: "#eee"
+	}).addTo(map);
+	</script>
+</html>
