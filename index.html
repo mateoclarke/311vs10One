@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 	<script src="district-shapefiles.js"></script>
+	<script src="geojson-utils.js"></script>
 </head>
 <body>
 	<h1>Open 311 vs 10-1 District Map</h1>
@@ -15,6 +16,7 @@
 
 </body>
 <script type="text/javascript">
+// Leaflet Map
 	var map = L.map('map', {
 	    center: [30.25, -97.75], //Austin!
 	    zoom: 11,
@@ -26,9 +28,13 @@
 	).addTo(map);
 
 	L.geoJson (districts, {
-		fill: false,
-		weight: 1,
-		color: "#eee"
+		fill: true,
+		weight: 3,
+		color: "#000"
 	}).addTo(map);
+
+// Geojson-utils
+
+
 	</script>
 </html>
