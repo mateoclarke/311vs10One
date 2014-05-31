@@ -17,29 +17,67 @@
 </body>
 <script type="text/javascript">
 // Leaflet Map
+
+	// create Leaflet Map
 	var map = L.map('map', {
 	    center: [30.25, -97.75], //Austin!
 	    zoom: 11,
 	    scrollWheelZoom: false
 	});
-
+	//  add tile Layer from Mapquest
 	L.tileLayer(
 	    'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
 	).addTo(map);
 
+	// functions for district styles & features
 	function onEachFeature(feature, layer) {
     layer.bindPopup('District ' + feature.properties.DISTRICT_N);
 	}
+	// add colors to different districts
+	function getColor(d) {
+	    return d > 9 ? '#8dd3c7' :
+	           d > 8  ? '#ffffb3' :
+	           d > 7  ? '#bebada' :
+	           d > 6  ? '#fb8072' :
+	           d > 5   ? '#80b1d3' :
+	           d > 4   ? '#fdb462' :
+	           d > 3   ? '#b3de69' :
+	           d > 2   ? '#fccde5' :
+	           d > 1   ? '#98e986' :
+	                      '#bc80bd';
+	}
+	function style(feature) {
+	    return {
+	        fillColor: getColor(feature.properties.DISTRICT_N),
+	        weight: 2,
+	        opacity: 1,
+	        color: 'white',
+	        dashArray: '3',
+	        fillOpacity: 0.7,
+	    };
+	}
+	// END
 
-	L.geoJson (districts, {
-		fill: true,
-		weight: 3,
-		color: "#000",
+	// adding district shapefiles to Map
+	var districtLayer = L.geoJson (districts, {
+		style: style,
 		onEachFeature: onEachFeature
 	})
 		.addTo(map);
+	// END
 
-// Geojson-utils
+	// A popup that is triggered when you click a district
+	// NOTE: overrides .bindPopup
+	var popup = L.popup();
+
+	function onDistrictClick(e) {
+	    popup
+	        .setLatLng(e.latlng)
+	        .setContent("You clicked the map at " + e.latlng.toString())
+	        .openOn(map);
+	}
+
+	districtLayer.on('click', onDistrictClick);
 
 
 	</script>
