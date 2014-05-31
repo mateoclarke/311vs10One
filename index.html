@@ -28,7 +28,7 @@
 	).addTo(map);
 
 	function onEachFeature(feature, layer) {
-    layer.bindPopup(feature.properties.DISTRICT_N);
+    layer.bindPopup('District ' + feature.properties.DISTRICT_N);
 	}
 
 	L.geoJson (districts, {
