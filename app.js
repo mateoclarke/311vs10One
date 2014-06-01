@@ -3,7 +3,8 @@
 // create Leaflet Map
 var map = L.map('map', {
 	center: [30.25, -97.75], //Austin!
-	zoom: 11,
+	center: [30.304539565829106, -97.73300170898438], //Austin!
+	zoom: 10,
 	scrollWheelZoom: false
 });
 //  add tile Layer from Mapquest
@@ -34,7 +35,7 @@ var districtLayer = L.geoJson(districts, {
 			opacity: 1,
 			color: 'white',
 			dashArray: '3',
-			fillOpacity: 0.7,
+			fillOpacity: 0.8,
 		};
 	},
 	onEachFeature: function onEachFeature(feature, layer) {
@@ -61,9 +62,17 @@ districtLayer.on('click', function onDistrictClick(e) {
 		url: url,
 	}).done(function(data, status) {
 		console.log('done', status, data)
+		console.log("ready to populate table");
+		console.log(data[0].sr_type_desc);
+		console.log(data[0].count_service_request_sr_number);
+		for (var i = 5; i >= 0; i--) {
+			$('.SR-'+i+'-type').text(data[i].sr_type_desc);
+			$('.SR-'+i+'-count').text(data[i].count_service_request_sr_number);
+		};
 	}).fail(function(xhr, status, err) {
-			console.error('fail', status, err);
+		console.error('fail', status, err);
 	});
+
 
 });
 
@@ -80,6 +89,8 @@ function districtToLayer(lat, lon) {
 	});
 
 }
+
+
 
 
 
