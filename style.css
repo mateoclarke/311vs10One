@@ -32,6 +32,7 @@ body, h1, h2, h3 {
 .district-311-info {
 	margin-left: 2%;
 	float: left;
+	width: 48%;
 }
 
 .district-title {
@@ -54,4 +55,8 @@ body, h1, h2, h3 {
 .info h4 {
     margin: 0 0 5px;
     color: #777;
+}
+
+.service-request-cat {
+	cursor: pointer;
 }

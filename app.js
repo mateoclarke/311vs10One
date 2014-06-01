@@ -45,16 +45,17 @@ var districtLayer = L.geoJson(districts, {
 	}
 }).addTo(map);
 
-districtLayer.on('mouseover', function onDistrictMouseover (e) {
-	var lat = e.latlng.lat,
-		lon = e.latlng.lng,
-		matchingDistricts = districtToLayer(lat, lon),
-		leDistrict = matchingDistricts[0],
-		district_id = leDistrict.properties.DISTRICT_N;
+// function for mouseover/hover
+// districtLayer.on('mouseover', function onDistrictMouseover (e) {
+// 	var lat = e.latlng.lat,
+// 		lon = e.latlng.lng,
+// 		matchingDistricts = districtToLayer(lat, lon),
+// 		leDistrict = matchingDistricts[0],
+// 		district_id = leDistrict.properties.DISTRICT_N;
 
-	console.log(lat, lon);
-	console.log('leDistrict', leDistrict.properties.DISTRICT_N);
-});
+// 	console.log(lat, lon);
+// 	console.log('leDistrict', leDistrict.properties.DISTRICT_N);
+// });
 
 districtLayer.on('click', function onDistrictClick(e) {
 	var lat = e.latlng.lat,
@@ -67,7 +68,10 @@ districtLayer.on('click', function onDistrictClick(e) {
 		console.log('matchingDistricts', matchingDistricts);
 		console.log('leDistrict', leDistrict.properties.DISTRICT_N);
 
-	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '%27%20and%20sr_created_date%20%3E=%20%272014-05-30%27%20and%20sr_created_date%20%3C%20%272014-05-31%27&$order=count_service_request_sr_number%20desc';
+	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '\'&$order=count_service_request_sr_number%20desc';
+
+	// string below filters date
+	// and%20sr_created_date%20%3E=%20%272014-05-30%27%20and%20sr_created_date%20%3C%20%272014-05-31%27&
 
 	console.log('GET', url, 'for district', district_id);
 
@@ -136,7 +140,7 @@ info.onAdd = function (map) {
     return this._div;
 };
 
-// method that we will use to update the control based on feature properties passed
+	// method that we will use to update the control based on feature properties passed
 info.update = function (property) {
     this._div.innerHTML = '<h4>311 Data by Austin City Council Districts</h4>' +  (property ?
         '<b>District ' + property.DISTRICT_N + '</b><br />'
@@ -144,6 +148,29 @@ info.update = function (property) {
 };
 
 info.addTo(map);
+
+// plot 311 points to district 
+$('.service-request-cat').on('click', function () {
+	var sr_type_desc = 'Code Compliance',
+	    sr_location_council_district = '7',
+	    url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + sr_location_council_district + '\'';
+
+	console.log('GET', url, 'for specific cat in district');
+
+	$.ajax({
+		method: 'GET',
+		url: url,
+	}).done(function(data, status) {
+		console.log('done with sr_cat specific call:', status, data);
+		console.log([data[0].sr_location_lat, data[0].sr_location_long]);
+		for (var i = data.length - 1; i >= 0; i--) {
+			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]).addTo(map);
+		};
+	}).fail(function(xhr, status, err) {
+		console.error('fail', status, err);
+	});
+});
+
 
 
 
