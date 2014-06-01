@@ -1,0 +1,96 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>311vs10-1</title>
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+	<script src="district-shapefiles.js"></script>
+	<script src="geojson-utils.js"></script>
+</head>
+<body>
+	<h1>Open 311 vs 10-1 District Map</h1>
+	<h2>an <a href="https://twitter.com/atxhack4change">@ATXHackforChange</a> project</h2>
+	<div id="map" class="map"></div>
+
+</body>
+<script type="text/javascript">
+// Leaflet Map
+
+	// create Leaflet Map
+	var map = L.map('map', {
+	    center: [30.25, -97.75], //Austin!
+	    zoom: 11,
+	    scrollWheelZoom: false
+	});
+	//  add tile Layer from Mapquest
+	L.tileLayer(
+	    'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
+	).addTo(map);
+
+	// add colors to different districts
+	function getColor(d) {
+	    return d > 9 ? '#8dd3c7' :
+	           d > 8  ? '#ffffb3' :
+	           d > 7  ? '#bebada' :
+	           d > 6  ? '#fb8072' :
+	           d > 5   ? '#80b1d3' :
+	           d > 4   ? '#fdb462' :
+	           d > 3   ? '#b3de69' :
+	           d > 2   ? '#fccde5' :
+	           d > 1   ? '#98e986' :
+	                      '#bc80bd';
+	}
+
+	// adding district shapefiles to Map
+	var districtLayer = L.geoJson(districts, {
+		style: function style(feature) {
+		    return {
+		        fillColor: getColor(feature.properties.DISTRICT_N),
+		        weight: 2,
+		        opacity: 1,
+		        color: 'white',
+		        dashArray: '3',
+		        fillOpacity: 0.7,
+		    };
+		},
+		onEachFeature: function onEachFeature(feature, layer) {
+		    layer.bindPopup('District ' + feature.properties.DISTRICT_N);
+		}
+	}).addTo(map);
+
+	districtLayer.on('click', function onDistrictClick(e) {
+		return ;
+			var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '%27%20and%20sr_created_date%20%3E=%20%272014-05-30%27%20and%20sr_created_date%20%3C%20%272014-05-31%27&$order=count_service_request_sr_number%20desc';
+
+			console.log('GET', url, 'for feature', feature);
+
+			$.ajax({
+				method: 'GET',
+				url: url,
+			}).done(function(data, status) {
+				console.log(url_all_districts, 'done', status, data)
+			}).fail(function(xhr, status, err) {
+					console.error(url_all_districts, 'fail', status, err);
+			});
+	});
+
+
+	var url_all_districts = 'http://data.austintexas.gov/resource/i26j-ai4z.json';
+
+	$(document).ready(function() {
+		console.log('document ready');
+		$.ajax({
+			method: 'GET',
+			url: url_all_districts
+		}).done(function(data, status) {
+			console.log(url_all_districts, 'done', status, data)
+		}).fail(function(xhr, status, err) {
+				console.error(url_all_districts, 'fail', status, err);
+		});
+	});
+
+	</script>
+</html>
