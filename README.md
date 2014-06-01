@@ -13,6 +13,7 @@ Contributions from:
 * Adrian Laurenzi @alaurenz (Socrata)
 * Luqmaan Dawoodjee @luqmaan
 * Chip Rosenthal @chip-rosenthal (Open Austin)
+* Eric McGregor @ericmcgregor
 
 Resources:
 
