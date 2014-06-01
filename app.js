@@ -1,3 +1,10 @@
+// Date picker
+$( "#date-from" ).datepicker(); 
+$( "#date-from" ).datepicker( "setDate", "-28" ); 
+$( "#date-to" ).datepicker(); 
+$( "#date-to" ).datepicker( "setDate", "0" ); 
+console.log($( "#date-to" ).datepicker( "getDate" ));
+
 // Leaflet Map
 
 // create Leaflet Map
@@ -6,6 +13,8 @@ var map = L.map('map', {
 	zoom: 10,
 	scrollWheelZoom: false
 });
+
+
 //  add tile Layer from Mapquest
 L.tileLayer(
 	'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
@@ -62,13 +71,17 @@ districtLayer.on('click', function onDistrictClick(e) {
 		lon = e.latlng.lng,
 		matchingDistricts = districtToLayer(lat, lon),
 		leDistrict = matchingDistricts[0],
-		district_id = leDistrict.properties.DISTRICT_N;
+		district_id = leDistrict.properties.DISTRICT_N,
+		date_from = $( "#date-from" ).datepicker( "getDate").toISOString(),
+        date_to = $( "#date-to" ).datepicker( "getDate" ).toISOString();
 
 		console.log(lat, lon);
 		console.log('matchingDistricts', matchingDistricts);
 		console.log('leDistrict', leDistrict.properties.DISTRICT_N);
 
-	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '\'&$order=count_service_request_sr_number%20desc';
+	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '%27%20and%20sr_created_date%20%3E=%20%27' + date_from.slice(0, 10) + '%27%20and%20sr_created_date%20%3C%20%27' + date_to.slice(0, 10) + '%27&$order=count_service_request_sr_number%20desc'
+
+	// var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '\'&$order=count_service_request_sr_number%20desc';
 
 	// string below filters date
 	// and%20sr_created_date%20%3E=%20%272014-05-30%27%20and%20sr_created_date%20%3C%20%272014-05-31%27&
