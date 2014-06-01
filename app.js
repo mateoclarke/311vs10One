@@ -83,7 +83,7 @@ districtLayer.on('click', function onDistrictClick(e) {
 		$('.district-title').text('District ' + leDistrict.properties.DISTRICT_N );
 		$('.thead-1').text('Service Type');
 		$('.thead-2').text('Count')
-		for (var i = 10; i >= 0; i--) {
+		for (var i = 0; i < 15; i++) {
 			$('.SR-'+i+'.type').text(data[i].sr_type_desc);
 			$('.SR-'+i+'.count').text(data[i].count_service_request_sr_number);
 		};
@@ -144,7 +144,7 @@ info.onAdd = function (map) {
 info.update = function (property) {
     this._div.innerHTML = '<h4>311 Data by Austin City Council Districts</h4>' +  (property ?
         '<b>District ' + property.DISTRICT_N + '</b><br />'
-        : 'Hover over a district');
+        : 'Click on a district');
 };
 
 info.addTo(map);
