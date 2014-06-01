@@ -2,3 +2,43 @@
 	width: 50%; height: 500px; 
 	float: left;
 }
+
+.thead-1, .thead-2 {
+	font-weight: bold;
+}
+
+body, h1, h2, h3 {
+	font-family: 'Open Sans', sans-serif;
+}
+
+.main-title {
+	width: 80%;
+	margin-left: 10%;
+}
+
+.main-title h1, .main-title h2 {
+	text-align: center
+}
+
+.main-title h1 {
+	margin-bottom: 0px;
+}
+
+.main-title h2 {
+	margin-top: 3px;
+	font-size: 18px;
+}
+
+.district-311-info {
+	margin-left: 2%;
+	float: left;
+}
+
+.district-title {
+	text-align: center;
+	border-bottom: 1px solid black;
+}
+
+.count {
+	text-align: center;
+}

@@ -2,7 +2,6 @@
 
 // create Leaflet Map
 var map = L.map('map', {
-	center: [30.25, -97.75], //Austin!
 	center: [30.304539565829106, -97.73300170898438], //Austin!
 	zoom: 10,
 	scrollWheelZoom: false
@@ -62,12 +61,13 @@ districtLayer.on('click', function onDistrictClick(e) {
 		url: url,
 	}).done(function(data, status) {
 		console.log('done', status, data)
-		console.log("ready to populate table");
-		console.log(data[0].sr_type_desc);
-		console.log(data[0].count_service_request_sr_number);
-		for (var i = 5; i >= 0; i--) {
-			$('.SR-'+i+'-type').text(data[i].sr_type_desc);
-			$('.SR-'+i+'-count').text(data[i].count_service_request_sr_number);
+		console.log(leDistrict.properties.DISTRICT_N);
+		$('.district-title').text('District ' + leDistrict.properties.DISTRICT_N );
+		$('.thead-1').text('Service Type');
+		$('.thead-2').text('Count')
+		for (var i = 10; i >= 0; i--) {
+			$('.SR-'+i+'.type').text(data[i].sr_type_desc);
+			$('.SR-'+i+'.count').text(data[i].count_service_request_sr_number);
 		};
 	}).fail(function(xhr, status, err) {
 		console.error('fail', status, err);
