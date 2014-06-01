@@ -38,9 +38,23 @@ var districtLayer = L.geoJson(districts, {
 		};
 	},
 	onEachFeature: function onEachFeature(feature, layer) {
-		layer.bindPopup('District ' + feature.properties.DISTRICT_N);
+		// layer.bindPopup('District ' + feature.properties.DISTRICT_N);
+		layer.on({
+		        click: highlightFeature
+		    });
 	}
 }).addTo(map);
+
+districtLayer.on('mouseover', function onDistrictMouseover (e) {
+	var lat = e.latlng.lat,
+		lon = e.latlng.lng,
+		matchingDistricts = districtToLayer(lat, lon),
+		leDistrict = matchingDistricts[0],
+		district_id = leDistrict.properties.DISTRICT_N;
+
+	console.log(lat, lon);
+	console.log('leDistrict', leDistrict.properties.DISTRICT_N);
+});
 
 districtLayer.on('click', function onDistrictClick(e) {
 	var lat = e.latlng.lat,
@@ -49,8 +63,9 @@ districtLayer.on('click', function onDistrictClick(e) {
 		leDistrict = matchingDistricts[0],
 		district_id = leDistrict.properties.DISTRICT_N;
 
-	console.log('matchingDistricts', matchingDistricts);
-	console.log('leDistrict', leDistrict.properties.DISTRICT_N);
+		console.log(lat, lon);
+		console.log('matchingDistricts', matchingDistricts);
+		console.log('leDistrict', leDistrict.properties.DISTRICT_N);
 
 	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '%27%20and%20sr_created_date%20%3E=%20%272014-05-30%27%20and%20sr_created_date%20%3C%20%272014-05-31%27&$order=count_service_request_sr_number%20desc';
 
@@ -61,7 +76,6 @@ districtLayer.on('click', function onDistrictClick(e) {
 		url: url,
 	}).done(function(data, status) {
 		console.log('done', status, data)
-		console.log(leDistrict.properties.DISTRICT_N);
 		$('.district-title').text('District ' + leDistrict.properties.DISTRICT_N );
 		$('.thead-1').text('Service Type');
 		$('.thead-2').text('Count')
@@ -90,10 +104,46 @@ function districtToLayer(lat, lon) {
 
 }
 
+// Hover highlight feature
+	function highlightFeature(e) {
+		districtLayer.eachLayer( function resetHighlight(layer) {
+		    districtLayer.resetStyle(layer);
+		    info.update();
+	});
 
+    var layer = e.target;
 
+    layer.setStyle({
+        weight: 2,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+    });
 
+    if (!L.Browser.ie && !L.Browser.opera) {
+        layer.bringToFront();
+    }
+    info.update(layer.feature.properties);
+    map.fitBounds(e.target.getBounds());
+}
 
+// info controls
+var info = L.control();
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+
+// method that we will use to update the control based on feature properties passed
+info.update = function (property) {
+    this._div.innerHTML = '<h4>311 Data by Austin City Council Districts</h4>' +  (property ?
+        '<b>District ' + property.DISTRICT_N + '</b><br />'
+        : 'Hover over a district');
+};
+
+info.addTo(map);
 
 
 
