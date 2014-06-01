@@ -7,13 +7,13 @@
 
 Contributions from:
 
-* Mateo Clarke @mateoclarke (Project Champion)
+* Mateo Clarke [@mateoclarke](https://github.com/mateoclarke) (Project Champion)
 * Michael Quinn (City of Austin: 311)
-* Jedd Fenner @jeddf
-* Adrian Laurenzi @alaurenz (Socrata)
-* Luqmaan Dawoodjee @luqmaan
-* Chip Rosenthal @chip-rosenthal (Open Austin)
-* Eric McGregor @ericmcgregor
+* Jedd Fenner [@jeddf](https://github.com/jeddf)
+* Adrian Laurenzi [@alaurenz](https://github.com/alaurenz) (Socrata)
+* Luqmaan Dawoodjee [@luqmaan](https://github.com/luqmann)
+* Chip Rosenthal [@chip-rosenthal](https://github.com/chip-rosenthal) (Open Austin)
+* Eric McGregor [@ericmcgregor](https://github.com/ericmcgregor)
 
 Resources:
 
