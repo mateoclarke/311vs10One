@@ -20,6 +20,9 @@ L.tileLayer(
 	'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
 ).addTo(map);
 
+// add markers layer group to map
+var markersLayer = new L.layerGroup().addTo(map);
+
 // add colors to different districts
 function getColor(d) {
 	return d > 9 ? '#8dd3c7' :
@@ -176,8 +179,13 @@ $('.service-request-cat').on('click', function () {
 	}).done(function(data, status) {
 		console.log('done with sr_cat specific call:', status, data);
 		console.log([data[0].sr_location_lat, data[0].sr_location_long]);
+
+		// clear markers
+		markersLayer.clearLayers();
+
+		// populate new marker set
 		for (var i = data.length - 1; i >= 0; i--) {
-			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]).addTo(map);
+			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]).addTo(markersLayer);
 		};
 	}).fail(function(xhr, status, err) {
 		console.error('fail', status, err);
