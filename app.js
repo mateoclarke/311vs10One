@@ -6,14 +6,12 @@ $( "#date-to" ).datepicker( "setDate", "0" );
 console.log($( "#date-to" ).datepicker( "getDate" ));
 
 // Leaflet Map
-
 // create Leaflet Map
 var map = L.map('map', {
 	center: [30.304539565829106, -97.73300170898438], //Austin!
 	zoom: 10,
 	scrollWheelZoom: false
 });
-
 
 //  add tile Layer from Mapquest
 L.tileLayer(
@@ -54,46 +52,31 @@ var districtLayer = L.geoJson(districts, {
 	}
 }).addTo(map);
 
-// function for mouseover/hover
-// districtLayer.on('mouseover', function onDistrictMouseover (e) {
-// 	var lat = e.latlng.lat,
-// 		lon = e.latlng.lng,
-// 		matchingDistricts = districtToLayer(lat, lon),
-// 		leDistrict = matchingDistricts[0],
-// 		district_id = leDistrict.properties.DISTRICT_N;
-
-// 	console.log(lat, lon);
-// 	console.log('leDistrict', leDistrict.properties.DISTRICT_N);
-// });
-
+// Clicking a specific district on the Map results in an 
+// AJAX call to get Service Request data from that district
 districtLayer.on('click', function onDistrictClick(e) {
 	var lat = e.latlng.lat,
 		lon = e.latlng.lng,
-		matchingDistricts = districtToLayer(lat, lon),
-		leDistrict = matchingDistricts[0],
-		district_id = leDistrict.properties.DISTRICT_N,
+		matchingDistricts = districtToLayer(lat, lon);
+  window.leDistrict = matchingDistricts[0];
+  window.currentDistrict = leDistrict.properties.DISTRICT_N;
+		districtId = leDistrict.properties.DISTRICT_N,
 		date_from = $( "#date-from" ).datepicker( "getDate").toISOString(),
         date_to = $( "#date-to" ).datepicker( "getDate" ).toISOString();
 
-		console.log(lat, lon);
-		console.log('matchingDistricts', matchingDistricts);
-		console.log('leDistrict', leDistrict.properties.DISTRICT_N);
+		console.log('You clicked on a point with these coordinates: ' + lat, lon);
+		console.log('That point exists inside District ' + districtId + ' represented by this shape object: ', matchingDistricts);
 
-	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '%27%20and%20sr_created_date%20%3E=%20%27' + date_from.slice(0, 10) + '%27%20and%20sr_created_date%20%3C%20%27' + date_to.slice(0, 10) + '%27&$order=count_service_request_sr_number%20desc'
-
-	// var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + district_id + '\'&$order=count_service_request_sr_number%20desc';
-
-	// string below filters date
-	// and%20sr_created_date%20%3E=%20%272014-05-30%27%20and%20sr_created_date%20%3C%20%272014-05-31%27&
-
-	console.log('GET', url, 'for district', district_id);
+	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + districtId + '%27%20and%20sr_created_date%20%3E=%20%27' + date_from.slice(0, 10) + '%27%20and%20sr_created_date%20%3C%20%27' + date_to.slice(0, 10) + '%27&$order=count_service_request_sr_number%20desc'
+	console.log('GET', url);
 
 	$.ajax({
 		method: 'GET',
 		url: url,
 	}).done(function(data, status) {
-		console.log('done', status, data)
-		$('.district-title').text('District ' + leDistrict.properties.DISTRICT_N );
+		console.log('DONE: Status is ', status, data)
+		console.log('These are the results for District ' + districtId)
+		$('.district-title').text('District ' + districtId );
 		$('.thead-1').text('Service Type');
 		$('.thead-2').text('Count')
 		for (var i = 0; i < 15; i++) {
@@ -103,23 +86,7 @@ districtLayer.on('click', function onDistrictClick(e) {
 	}).fail(function(xhr, status, err) {
 		console.error('fail', status, err);
 	});
-
-
 });
-
-function districtToLayer(lat, lon) {
-	var point = {type: "Point", coordinates: [lon, lat]};
-
-	return districts.features.filter(function(dist) {
-		var shape = dist.geometry;
-
-		if (shape.type === 'Polygon') {
-			return gju.pointInPolygon(point, shape);;
-		}
-		else return gju.pointInMultiPolygon(point, shape);
-	});
-
-}
 
 // Hover highlight feature
 	function highlightFeature(e) {
@@ -144,7 +111,7 @@ function districtToLayer(lat, lon) {
     map.fitBounds(e.target.getBounds());
 }
 
-// info controls
+// info controls on map
 var info = L.control();
 
 info.onAdd = function (map) {
@@ -162,12 +129,15 @@ info.update = function (property) {
 
 info.addTo(map);
 
-// plot 311 points to district 
+// plots 311 points to district polygon in map
 $('.service-request-cat').on('click', function () {
-	var sr_type_desc = 'Code Compliance',
-	    sr_location_council_district = '7',
-	    url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + sr_location_council_district + '\'';
+	var self = $(this),
+			sr_type_desc = self.find('.type').text(),
+	    url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'';
 
+	console.log(self);
+	console.log('Looking up SR Type: ' + sr_type_desc);
+	console.log('in ' + leDistrict);
 	console.log('GET', url, 'for specific cat in district');
 
 	$.ajax({
@@ -184,6 +154,21 @@ $('.service-request-cat').on('click', function () {
 	});
 });
 
+
+// function that helps us get a point within a polygon
+function districtToLayer(lat, lon) {
+	var point = {type: "Point", coordinates: [lon, lat]};
+
+	return districts.features.filter(function(dist) {
+		var shape = dist.geometry;
+
+		if (shape.type === 'Polygon') {
+			return gju.pointInPolygon(point, shape);;
+		}
+		else return gju.pointInMultiPolygon(point, shape);
+	});
+
+}
 
 
 
