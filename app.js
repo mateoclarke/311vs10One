@@ -136,7 +136,7 @@ $('.service-request-cat').on('click', function () {
 	    url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'';
 
 	console.log(self);
-	console.log('Looking up SR Type: ' + sr_type_desc);
+	console.log('Looking up ' + sr_type_desc + ' Service Requests');
 	console.log('in ' + leDistrict);
 	console.log('GET', url, 'for specific cat in district');
 
