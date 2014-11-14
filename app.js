@@ -79,9 +79,11 @@ districtLayer.on('click', function onDistrictClick(e) {
 		$('.district-title').text('District ' + districtId );
 		$('.thead-1').text('Service Type');
 		$('.thead-2').text('Count')
+		$('.thead-3').text('Map')
 		for (var i = 0; i < 15; i++) {
 			$('.SR-'+i+'.type').text(data[i].sr_type_desc);
 			$('.SR-'+i+'.count').text(data[i].count_service_request_sr_number);
+			$('.SR-'+i+'.plot').html("<a href='#'>Map Data</a>");
 		};
 	}).fail(function(xhr, status, err) {
 		console.error('fail', status, err);
