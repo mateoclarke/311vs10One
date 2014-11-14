@@ -133,7 +133,8 @@ info.addTo(map);
 $('.service-request-cat').on('click', function () {
 	var self = $(this),
 			sr_type_desc = self.find('.type').text(),
-	    url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'';
+			url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'and%20sr_created_date%20%3E=%20%27' + '2014-10-17' + '%27%20and%20sr_created_date%20%3C%20%27' + '2014-11-14' + '\'';
+	    // url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'';
 
 	console.log(self);
 	console.log('Looking up ' + sr_type_desc + ' Service Requests');
