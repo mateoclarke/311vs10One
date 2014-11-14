@@ -3,8 +3,12 @@
 	float: left;
 }
 
-.thead-1, .thead-2 {
+.thead-1, .thead-2, .thead-3 {
 	font-weight: bold;
+}
+
+.thead-3 {
+	text-align: center;
 }
 
 body, h1, h2, h3 {
