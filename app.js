@@ -18,9 +18,6 @@ L.tileLayer(
 	'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg'
 ).addTo(map);
 
-// add markers layer group to map
-var markersLayer = new L.layerGroup().addTo(map);
-
 // add colors to different districts
 function getColor(d) {
 	return d > 9 ? '#8dd3c7' :
@@ -82,9 +79,11 @@ districtLayer.on('click', function onDistrictClick(e) {
 		$('.district-title').text('District ' + districtId );
 		$('.thead-1').text('Service Type');
 		$('.thead-2').text('Count')
+		$('.thead-3').text('Map')
 		for (var i = 0; i < 15; i++) {
 			$('.SR-'+i+'.type').text(data[i].sr_type_desc);
 			$('.SR-'+i+'.count').text(data[i].count_service_request_sr_number);
+			$('.SR-'+i+'.plot').html("<a href='#'>Map Data</a>");
 		};
 	}).fail(function(xhr, status, err) {
 		console.error('fail', status, err);
@@ -136,8 +135,9 @@ info.addTo(map);
 $('.service-request-cat').on('click', function () {
 	var self = $(this),
 			sr_type_desc = self.find('.type').text(),
-			url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'and%20sr_created_date%20%3E=%20%27' + '2014-10-17' + '%27%20and%20sr_created_date%20%3C%20%27' + '2014-11-14' + '\'';
-	    // url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'';
+			date_from = $( "#date-from" ).datepicker( "getDate").toISOString(),
+      date_to = $( "#date-to" ).datepicker( "getDate" ).toISOString();
+			url = 'http://data.austintexas.gov/resource/i26j-ai4z.json?$where=sr_type_desc=\'' + sr_type_desc  + '\'%20and%20sr_location_council_district=\'' + currentDistrict + '\'and%20sr_created_date%20%3E=%20%27' + date_from.slice(0, 10) + '%27%20and%20sr_created_date%20%3C%20%27' + date_to.slice(0, 10)  + '\'';
 
 	console.log(self);
 	console.log('Looking up ' + sr_type_desc + ' Service Requests');
@@ -150,13 +150,8 @@ $('.service-request-cat').on('click', function () {
 	}).done(function(data, status) {
 		console.log('done with sr_cat specific call:', status, data);
 		console.log([data[0].sr_location_lat, data[0].sr_location_long]);
-
-		// clear markers
-		markersLayer.clearLayers();
-
-		// populate new marker set
 		for (var i = data.length - 1; i >= 0; i--) {
-			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]).addTo(markersLayer);
+			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]).addTo(map);
 		};
 	}).fail(function(xhr, status, err) {
 		console.error('fail', status, err);
