@@ -160,9 +160,12 @@ $('.service-request-cat').on('click', function () {
 
 
 		for (var i = data.length - 1; i >= 0; i--) {
-			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]);
+			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]).bindPopup(
+				data[i].sr_location +"<br>"+ 
+				"<strong>" + data[i].sr_type_desc +"</strong><br>"+ 
+				"Department: " + data[i].sr_department_desc +"<br>"+ 
+				"Status: " + data[i].sr_status_desc );
 			markers.addLayer(marker);
-			// console.log(markerLayer);
 		};
 			map.addLayer(markers);
 	}).fail(function(xhr, status, err) {
