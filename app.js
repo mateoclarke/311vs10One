@@ -70,6 +70,8 @@ districtLayer.on('click', function onDistrictClick(e) {
 	var url = 'https://data.austintexas.gov/resource/i26j-ai4z.json?$select=sr_type_desc,count%28sr_number%29&$group=sr_type_desc&$where=sr_location_council_district=%27' + districtId + '%27%20and%20sr_created_date%20%3E=%20%27' + date_from.slice(0, 10) + '%27%20and%20sr_created_date%20%3C%20%27' + date_to.slice(0, 10) + '%27&$order=count_service_request_sr_number%20desc'
 	console.log('GET', url);
 
+	markers.clearLayers();
+
 	$.ajax({
 		method: 'GET',
 		url: url,
@@ -132,6 +134,8 @@ info.update = function (property) {
 info.addTo(map);
 
 // plots 311 points to district polygon in map
+var markers = new L.layerGroup();
+
 $('.service-request-cat').on('click', function () {
 	var self = $(this),
 			sr_type_desc = self.find('.type').text(),
@@ -144,15 +148,23 @@ $('.service-request-cat').on('click', function () {
 	console.log('in ' + leDistrict);
 	console.log('GET', url, 'for specific cat in district');
 
+	markers.clearLayers();
+	console.log(markers);
+
 	$.ajax({
 		method: 'GET',
 		url: url,
 	}).done(function(data, status) {
 		console.log('done with sr_cat specific call:', status, data);
 		console.log([data[0].sr_location_lat, data[0].sr_location_long]);
+
+
 		for (var i = data.length - 1; i >= 0; i--) {
-			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]).addTo(map);
+			var marker = L.marker([data[i].sr_location_lat, data[i].sr_location_long]);
+			markers.addLayer(marker);
+			// console.log(markerLayer);
 		};
+			map.addLayer(markers);
 	}).fail(function(xhr, status, err) {
 		console.error('fail', status, err);
 	});
